@@ -15,15 +15,15 @@ type Handler struct {
 
 func New(services struct{}, states struct{}) *Handler {
 	// There are 2 admins for example
-	admin0, _ := strconv.Atoi(os.Getenv("ADMIN_0"))
-	admin1, _ := strconv.Atoi(os.Getenv("ADMIN_1"))
+	adminID0, _ := strconv.Atoi(os.Getenv("ADMIN_ID_0"))
+	adminID1, _ := strconv.Atoi(os.Getenv("ADMIN_ID_1"))
 
 	return &Handler{
 		services: services,
 		states:   states,
 		admins:   map[int64]bool{
-			int64(admin0): true,
-			int64(admin1): true,
+			int64(adminID0): true,
+			int64(adminID1): true,
 		},
 	}
 }

@@ -28,6 +28,7 @@ func (b *Bot) Start(token string, debug bool) {
 	u.Timeout = 60
 
 	b.logger.Info("Bot started")
+	
 	updates := tgbot.GetUpdatesChan(u)
 	for update := range updates {
 		if update.Message != nil && update.Message.IsCommand() {
