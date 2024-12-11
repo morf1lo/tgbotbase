@@ -18,13 +18,13 @@ func (h *Handler) HandleMessage(tgbot *tgbotapi.BotAPI, update tgbotapi.Update) 
     //     }
     
     //     adminStatesFunctions := map[string]func(tgbot *tgbotapi.BotAPI, update tgbotapi.Update){
-    //         model.NilState: h.handleNilState,
-    //         model.WaitingForNextMessageState: h.handleNextMessage,
+    //         model.NilState: h.adminHandleNilState,
+    //         model.WaitingForNextMessageState: h.adminHandleNextMessage,
     //     }
 
     //     h.logger.Sugar().Infof("Admin(%d) current state is %s", userID, adminState)
     //     adminStatesFunctions[adminState](tgbot, update)
     // } else {
-            // Handle NOT admin message
+    //     Handle NOT admin message
     // }
 }
