@@ -5,22 +5,23 @@ import (
 	"strconv"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"go.uber.org/zap"
 )
 
 type Handler struct {
+	logger *zap.Logger
 	services struct{}       // Your services from 'internal/service'
-	states   struct{}       // Your states from 'internal/model'
 	admins   map[int64]bool // Telegram bot admin ids
 }
 
-func New(services struct{}, states struct{}) *Handler {
+func New(logger *zap.Logger, services struct{}) *Handler {
 	// There are 2 admins for example
 	adminID0, _ := strconv.Atoi(os.Getenv("ADMIN_ID_0"))
 	adminID1, _ := strconv.Atoi(os.Getenv("ADMIN_ID_1"))
 
 	return &Handler{
+		logger: logger,
 		services: services,
-		states:   states,
 		admins:   map[int64]bool{
 			int64(adminID0): true,
 			int64(adminID1): true,

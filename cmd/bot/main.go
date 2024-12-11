@@ -49,7 +49,6 @@ func main() {
 	// }
 	// rdb := redis.NewClient(redisOptions)
 
-	// states := &model.States{}
 	// repos := repository.New(db, rdb)
 	// services := service.New(repos)
 	// handlers := handler.New(services)
