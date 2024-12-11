@@ -28,9 +28,3 @@ func (h *Handler) HandleMessage(tgbot *tgbotapi.BotAPI, update tgbotapi.Update) 
             // Handle NOT admin message
     // }
 }
-
-func (h *Handler) handleNilState(tgbot *tgbotapi.BotAPI, update tgbotapi.Update) {
-}
-
-func (h *Handler) handleNextMessage(tgbot *tgbotapi.BotAPI, update tgbotapi.Update) {
-}
