@@ -10,8 +10,9 @@ type Bot struct {
 	handler *Handler
 }
 
-func NewBot(handler *Handler) *Bot {
+func NewBot(logger *zap.Logger, handler *Handler) *Bot {
 	return &Bot{
+		logger: logger,
 		handler: handler,
 	}
 }
@@ -26,15 +27,15 @@ func (b *Bot) Start(token string, debug bool) {
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
-
-	b.logger.Info("Bot started")
 	
 	updates := tgbot.GetUpdatesChan(u)
 	for update := range updates {
 		if update.Message != nil && update.Message.IsCommand() {
-			b.handler.HandleCommand(tgbot, update)
+			go b.handler.HandleCommand(tgbot, update)
 		} else if update.Message != nil && !update.Message.IsCommand() {
-			b.handler.HandleMessage(tgbot, update)
+			go b.handler.HandleMessage(tgbot, update)
+		} else if update.CallbackQuery != nil {
+			go b.handler.CallbackQueryHandler(tgbot, update.CallbackQuery)
 		}
 	}
 }

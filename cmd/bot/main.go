@@ -5,8 +5,15 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/morf1lo/tgbotbase/internal/config"
+	"github.com/morf1lo/tgbotbase/internal/handler"
+	"github.com/morf1lo/tgbotbase/internal/repository"
+	"github.com/morf1lo/tgbotbase/internal/repository/postgres"
+	"github.com/morf1lo/tgbotbase/internal/service"
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
@@ -25,35 +32,51 @@ func main() {
 		logger.Sugar().Fatalf("failed to initialize yaml config: %s", err.Error())
 	}
 
-	// postgresConfig := &config.PostgresConfig{
-	// 	Username: os.Getenv("POSTGRES_USERNAME"),
-	// 	Password: os.Getenv("POSTGRES_PASSWORD"),
-	// 	Host: os.Getenv("POSTGRES_HOST"),
-	// 	Port: os.Getenv("POSTGRES_PORT"),
-	// 	DBName: os.Getenv("POSTGRES_DATABASE"),
-	// 	SSLMode: os.Getenv("POSTGRES_SSLMODE"),
-	// }
-	// db, err := db.NewPostgresDatabase(ctx, postgresConfig)
-	// if err != nil {
-	// 	logger.Sugar().Fatalf("failed to connect to PostgreSQL Database: %s", err.Error())
-	// }
+	if err := config.LoadLocalizations(); err != nil {
+		logger.Sugar().Fatalf("failed to load localizations: %s", err.Error())
+	}
 
-	// redisOptions := &redis.Options{
-	// 	Addr: os.Getenv("REDIS_ADDR"),
-	// 	Username: os.Getenv("REDIS_USERNAME"),
-	// 	Password: os.Getenv("REDIS_PASSWORD"),
-	// 	DB: 0,
-	// 	Protocol: 2,
-	// 	ReadTimeout: time.Second * 5,
-	// 	WriteTimeout: time.Second * 5,
-	// }
-	// rdb := redis.NewClient(redisOptions)
+	postgresConfig := &config.PostgresConfig{
+		Username: os.Getenv("POSTGRES_USERNAME"),
+		Password: os.Getenv("POSTGRES_PASSWORD"),
+		Host: os.Getenv("POSTGRES_HOST"),
+		Port: os.Getenv("POSTGRES_PORT"),
+		DBName: os.Getenv("POSTGRES_DBNAME"),
+		SSLMode: os.Getenv("POSTGRES_SSLMODE"),
+	}
+	db, err := postgres.NewPostgresDatabase(ctx, postgresConfig)
+	if err != nil {
+		logger.Sugar().Fatalf("failed to connect to Postgres: %s", err.Error())
+	}
+	err = db.Ping(ctx)
+	if err != nil {
+		logger.Sugar().Fatalf("failed to connect to Postgres: %s", err)
+	}
+	logger.Sugar().Info("Successfully connected to Postgres")
 
-	// repos := repository.New(db, rdb)
-	// services := service.New(repos)
-	// handlers := handler.New(services)
-	// bot := handler.NewBot(logger, handlers)
-	// bot.Start(os.Getenv("BOT_TOKEN", viper.GetBool("bot.debug")))
+	redisOptions := &redis.Options{
+		Addr: os.Getenv("REDIS_ADDR"),
+		Username: os.Getenv("REDIS_USERNAME"),
+		Password: os.Getenv("REDIS_PASSWORD"),
+		DB: 0,
+		Protocol: 3,
+		ReadTimeout: time.Second * 5,
+		WriteTimeout: time.Second * 5,
+	}
+	rdb := redis.NewClient(redisOptions)
+	pong, err := rdb.Ping(ctx).Result()
+	if err != nil {
+		logger.Sugar().Fatalf("failed to ping Redis: %s", err)
+	}
+	logger.Sugar().Infof("Successfully connected to Redis: %s", pong)
+
+	repos := repository.New(db, rdb)
+	services := service.New(repos)
+	handlers := handler.New(logger, services)
+	bot := handler.NewBot(logger, handlers)
+	bot.Start(os.Getenv("BOT_TOKEN"), viper.GetBool("bot.debug"))
+
+	logger.Info("Telegam Bot Started. Press Ctrl + C to exit.")
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
