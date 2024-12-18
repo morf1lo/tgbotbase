@@ -1,2 +1,3 @@
 startCMD:
-  message: "🌹 Hello World!"
+  startMessage: "Hello! Send me a message, and I will send it back to chat."
+  message: "🌹 %s"

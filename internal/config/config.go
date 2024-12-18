@@ -40,3 +40,8 @@ type PostgresConfig struct {
 	DBName   string
 	SSLMode  string
 }
+
+type BotConfig struct {
+	Token string
+	Debug bool
+}

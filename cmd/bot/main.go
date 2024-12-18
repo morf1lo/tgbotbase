@@ -70,13 +70,18 @@ func main() {
 	}
 	logger.Sugar().Infof("Successfully connected to Redis: %s", pong)
 
+	botConfig := &config.BotConfig{
+		Token: os.Getenv("BOT_TOKEN"),
+		Debug: viper.GetBool("bot.debug"),
+	}
+
 	repos := repository.New(db, rdb)
 	services := service.New(repos)
-	handlers := handler.New(logger, services)
-	bot := handler.NewBot(logger, handlers)
-	bot.Start(os.Getenv("BOT_TOKEN"), viper.GetBool("bot.debug"))
+	handlers := handler.New(logger, services, botConfig)
 
 	logger.Info("Telegam Bot Started. Press Ctrl + C to exit.")
+
+	handlers.RunBot()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
