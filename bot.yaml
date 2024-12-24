@@ -1,0 +1,4 @@
+# Your bot config
+
+bot:
+  debug: false
