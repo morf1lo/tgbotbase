@@ -12,17 +12,12 @@ import (
 	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers/conversation"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers/filters/callbackquery"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers/filters/message"
-	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers/filters/precheckoutquery"
 	"github.com/morf1lo/tgbotbase/internal/config"
 	"github.com/morf1lo/tgbotbase/internal/service"
 	"go.uber.org/zap"
 )
 
-const (
-	START_STATE = "start-state"
-)
-
-var c = context.Background()
+var c = context.Background() // for operations in handler services
 
 type Handler struct {
 	logger   *zap.Logger
@@ -76,16 +71,12 @@ func (h *Handler) RunBot() {
 	))
 
 	// Commands
-	dispatcher.AddHandler(handlers.NewCommand("start", h.StartCMD))
+	// ...
 
 	// Callbacks
 	// Or you can add a separate handler for each callback
 	// Read documentation to github.com/PaulSonOfLars/gotgbot/v2
 	dispatcher.AddHandler(handlers.NewCallback(callbackquery.All, h.CallbackQueryHandler))
-
-	// Payments
-	dispatcher.AddHandler(handlers.NewPreCheckoutQuery(precheckoutquery.All, h.PreCheckoutHandler))
-	dispatcher.AddHandler(handlers.NewMessage(message.SuccessfulPayment, h.SuccessfulPaymentHandler))
 
 	// Start polling
 	if err := updater.StartPolling(b, &ext.PollingOpts{
