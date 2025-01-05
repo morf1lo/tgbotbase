@@ -18,9 +18,9 @@ import (
 	"go.uber.org/zap"
 )
 
-var ctx = context.Background()
-
 func main() {
+	ctx := context.Background()
+
 	// Initializing all configs, repositories and services
 	logger, _ := zap.NewProduction()
 
@@ -77,7 +77,7 @@ func main() {
 
 	repos := repository.New(db, rdb)
 	services := service.New(repos)
-	handlers := handler.New(logger, services, botConfig)
+	handlers := handler.New(ctx, logger, services, botConfig)
 
 	logger.Info("Telegam Bot Started. Press Ctrl + C to exit.")
 

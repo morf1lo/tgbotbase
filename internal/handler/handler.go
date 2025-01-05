@@ -17,27 +17,33 @@ import (
 	"go.uber.org/zap"
 )
 
-var c = context.Background() // for operations in handler services
-
 type Handler struct {
+	ctx context.Context // For operations in handler's services
 	logger   *zap.Logger
 	services *service.Service // Your services from 'internal/service'
 	admins   map[int64]bool // Telegram bot admin ids
 	cfg      *config.BotConfig // Bot config from 'internal/config'
 }
 
-func New(logger *zap.Logger, services *service.Service, cfg *config.BotConfig) *Handler {
-	// There are 2 admins for example
-	adminID0, _ := strconv.Atoi(os.Getenv("ADMIN_ID_0"))
-	adminID1, _ := strconv.Atoi(os.Getenv("ADMIN_ID_1"))
+func New(ctx context.Context, logger *zap.Logger, services *service.Service, cfg *config.BotConfig) *Handler {
+	i := 0
+	isThereAnyAdmins := true
+	admins := map[int64]bool{}
+	for isThereAnyAdmins {
+		adminID, err := strconv.Atoi(os.Getenv("ADMIN_ID_" + strconv.Itoa(i)))
+		if err == nil {
+			admins[int64(adminID)] = true
+			i++
+		} else {
+			isThereAnyAdmins = false
+		}
+	}
 
 	return &Handler{
+		ctx: ctx,
 		logger: logger,
 		services: services,
-		admins:   map[int64]bool{
-			int64(adminID0): true,
-			int64(adminID1): true,
-		},
+		admins: admins,
 		cfg: cfg,
 	}
 }
@@ -75,7 +81,7 @@ func (h *Handler) RunBot() {
 
 	// Callbacks
 	// Or you can add a separate handler for each callback
-	// Read documentation to github.com/PaulSonOfLars/gotgbot/v2
+	// Read documentation to github.com/PaulSonOfLars/gotgbot
 	dispatcher.AddHandler(handlers.NewCallback(callbackquery.All, h.CallbackQueryHandler))
 
 	// Start polling
