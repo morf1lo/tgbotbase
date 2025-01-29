@@ -10,7 +10,7 @@ git clone https://github.com/morf1lo/tgbotbase.git
 
 ### Structure
 
-- `/cmd`/`bot` - *`package main` for starting your bot*
+- `/cmd/bot` - *`package main` for starting your bot*
 - `/i18n` - ***<*language*>.yaml** files with bot texts translation*
 - `/internal` - *all your bot business logic*
     - `/config` - *configuration **structs***
