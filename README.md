@@ -10,18 +10,18 @@ git clone https://github.com/morf1lo/tgbotbase.git
 
 ### Structure
 
-- `/cmd/bot` - *`package main` for starting your bot*
-- `/i18n` - ***<*language*>.yaml** files with bot texts translation*
-- `/internal` - *all your bot business logic*
-    - `/config` - *configuration **structs***
-    - `/handler` - *telegram actions handlers*
-    - `/localization` - *dynamic text translation*
-    - `/model` - *your database models*
-    - `/repository` - *working with databases*
-        - `/postgres` - *working with PostgreSQL (for example)*
-        - `/redisrepo` - *Redis*
-    - `/service` - ***main** logic, that you will use in **handlers***
+- `/cmd/bot` - `package main` for starting your bot
+- `/i18n` - **<*language*>.yaml** files with bot texts translation
+- `/internal` - all your bot business logic
+    - `/config` - configuration **structs**
+    - `/handler` - telegram actions handlers
+    - `/localization` - dynamic text translation
+    - `/model` - your database models
+    - `/repository` - working with databases
+        - `/postgres` - working with PostgreSQL (for example)
+        - `/redisrepo` - working with Redis
+    - `/service` - **main** logic, that you will use in **handlers**
 
-`.env` - *your environment variables*
+`.env` - your environment variables
 
-`bot.yaml` - *your bot config*
+`bot.yaml` - your bot config
