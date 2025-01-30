@@ -26,7 +26,13 @@ type Handler struct {
 }
 
 func New(ctx context.Context, logger *zap.Logger, services *service.Service, cfg *config.BotConfig) *Handler {
-	i := 0
+	// Register admins from .env
+	// each admin variables should look like:
+	// ADMIN_ID_<number>
+	// For example:
+	// ADMIN_ID_1="123"
+	// ADMIN_ID_2="456"
+	i := 1
 	isThereAnyAdmins := true
 	admins := map[int64]bool{}
 	for isThereAnyAdmins {
