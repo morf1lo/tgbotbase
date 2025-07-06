@@ -3,7 +3,7 @@ module github.com/morf1lo/tgbotbase
 go 1.23.0
 
 require (
-	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.30
+	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.33
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/joho/godotenv v1.5.1
 	github.com/redis/go-redis/v9 v9.7.0
