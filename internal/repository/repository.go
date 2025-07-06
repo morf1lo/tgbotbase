@@ -8,8 +8,8 @@ import (
 )
 
 type Repository struct {
-	*postgres.Postgres
-	*redisrepo.Redis
+	Postgres *postgres.Postgres
+	Redis *redisrepo.Redis
 }
 
 func New(db *pgx.Conn, rdb *redis.Client) *Repository {
